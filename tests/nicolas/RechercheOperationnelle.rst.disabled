@@ -1,0 +1,523 @@
+Introduction à l’optimisation
+=============================
+
+TD: Ordonnancement par la méthode des potentiels
+------------------------------------------------
+
+On veut construire une maison, ce qui consiste en `9` tâches, le
+plus rapidement possible, avec les contraintes suivantes:
+
+-  Certaines tâches dépendent d’autres tâches
+
+-  Toutes les tâches demandent une semaine de travail.
+
+-  Chaque ouvrier ne peut travailler que sur une tâche par jour
+
+-  Il n’y a pas de gain de temps si plusieurs ouvriers travaillent sur
+   la même tâche
+
+|image|
+
+Organisez un emploi du temps pour un ouvrier, de façon à construire la
+maison le plus rapidement.
+
+\|c\|c\|c\|c\|c\|c\|c\|c\| & semaine 1 & semaine 2 & semaine 3 & semaine
+4 & semaine 5 & semaine 6 & semaine 7ouvrier 1 & & & & & & &
+
+De même, s’il y a deux ouvriers:
+
+\|c\|c\|c\|c\|c\|c\|c\|c\| & semaine 1 & semaine 2 & semaine 3 & semaine
+4 & semaine 5 & semaine 6 & semaine 7ouvrier 1 & & & & & & & ouvrier 2 &
+& & & & & &
+
+De même, s’il y a trois ouvriers:
+
+\|c\|c\|c\|c\|c\|c\|c\|c\| & semaine 1 & semaine 2 & semaine 3 & semaine
+4 & semaine 5 & semaine 6 & semaine7ouvrier 1 & & & & & & & ouvrier 2 &
+& & & & & & ouvrier 3 & & & & & & &
+
+Et s’il y a plus d’ouvriers ?
+
+Généralisation avec des durées.
+
+Problèmes d’optimisation
+------------------------
+
+Quelles sont les coordonnées du point culminant du massif de la
+Chartreuse?
+
+|image|
+
+Modélisation:
+
+Un *problème d’optimisation* est décrit par:
+
+-  | Un *domaine* `S`
+   | Ici, `S` est l’ensemble des points `p` de la surface de
+   la terre, décrits par leur coordonnées (longitude, latitude).
+   | Un élément de `S` est appellé *solution*.
+
+-  | Des contraintes `C` définissant un sous-ensemble de
+   `S`.
+   | Ici,
+   `C(p):=\texttt{« \ensuremath{p} est dans le massif de la Chartreuse »}`.
+   | Une solution `p` vérifiant les contraintes `C(p)` est
+   dite *solution faisable*.
+
+-  | Une *fonction objectif* : `z:S\mapsto\mathbb{R}`
+   | Ici la fonction `p\mapsto z(p)` qui associe à un point
+   `p` de la surface de la terre sont altitude `z(p)`.
+
+Il faut de plus préciser s’il s’agit d’un problème de *maximisation* ou
+de *minimisation*.
+
+Une solution faisable `p` est dite *optimale* si
+`z(p)\geq z(q)` pour toute autre solution faisable `q`.
+
+But: déterminer l’ensemble des solutions optimales.
+
+Modéliser les problèmes suivants, puis les résoudre ou proposer des
+méthodes de résolution:
+
+#. Calcul du plus court chemin dans un graphe.
+
+#. Recherche d’un ordonnancement optimal pour ...
+
+#. Déterminer le plus petits nombre de cartons nécessaires pour un
+   déménagement.
+
+#. Chercher un mat en un minimum de coup
+
+#. Recherche de l’élément maximal d’un tableau de `n` valeurs
+   aléatoires.
+
+#. Maximiser `z` pour `z` dans `[0,1[`.
+
+#. Maximiser `z` pour `z` dans `\mathbb{R}^+`.
+
+#. | Déterminer la valeur minimale de la fonction `x^2+2x-4`.
+   | ``plotfunc2d(x2 + 2*x - 4)``
+
+#. | Déterminer la valeur minimale de la fonction
+   `2x^3-5x^2-x+7`.
+   | ``plotfunc2d(2*x3 - 5*x - x + 7)``
+
+#. | Déterminer la valeur maximale de la fonction
+   `\sin(x)\sin(\pi x+2)+0.01x^2`.
+   | ``plotfunc2d(sin(x) * sin(PI*x+2)-0.01*x2,x=-20..20)``
+
+#. Quelle est la profondeur maximale de l’océan?
+
+Bilan: un problème d’optimisation peut avoir
+
+-  Aucune solution
+
+-  Aucune solution optimale (non borné)
+
+-  Une unique solution optimale
+
+Quelques méthodes d’optimisation:
+
+#. Méthodes globales:
+
+   -  Monte-Carlo
+
+   -  Recherche exhaustive (toujours possible pour un problème discret
+      fini; parfois la seule méthode existante)
+
+   -  Recherche exhaustive structurée, avec coupures de branches.
+
+#. | Méthodes locales, itératives:
+   | Lorsque le problème a une propriété de «convexité», l’optimisation
+   locale amène à une optimisation globale!
+
+   -  Algorithmes gloutons
+
+   -  Méthodes analytiques (gradient)
+
+   -  Méthode du simplexe
+
+#. Méthodes mixtes:
+
+   -  Monte-Carlo + gradient
+
+   -  Recuit simulé, …
+
+Programmation linéaire
+======================
+
+Problèmes de flot maximum
+=========================
+
+Introduction
+------------
+
+*Problème de flot max:*
+
+-  Réseau avec source et puits
+
+-  Pas de coûts sur les arcs
+
+-  Contraintes de capacités sur les arcs
+
+-  Production et consommation nulle sur chaque noeud intermédiaire
+
+|image|
+
+Objectif:
+
+Maximiser le *volume* du flot, c’est-à-dire la quantité transportée
+entre `s` et `p`.
+
+Un dimanche soir, maximiser le nombre de voitures allant d’Albertville à
+Lyon, en les répartissant entre les différentes routes possibles.
+
+Mettre le problème de flot dessiné ci-dessus sous forme de programme
+linéaire.
+
+Clairement, cela se généralise à tout problème de flot max.
+
+Que peut-on en déduire ?
+
+-  On a un algorithme de résolution (simplexe)
+
+-  On doit bien avoir une dualité!
+
+Coupes dans un problème de flot
+-------------------------------
+
+Une *coupe* `C` dans un réseau est un ensemble de sommets du
+réseau contenant la source.
+
+La capacité de la coupe `C` est la somme des capacités des arrêtes
+sortantes de `C`.
+
+Dans notre réseau, la coupe `C=\left\{ s\right\} ` est de capacité
+`5`.
+
+|image|
+
+Quelle est la capacité de la coupe
+`C=\left\{ s,i_2,i_3\right\} `?
+
+Que peut-on en déduire sur la valeur d’un flot ?
+
+Pour toute coupe `C` et tout flot `F` dans un réseau, la
+capacité `\left|C\right|` de la coupe est supérieure au volume
+`\left|F\right|` du flot:
+`\left|C\right|\geq\left|F\right|`.
+
+Chercher un flot maximal et une coupe minimal dans notre exemple?
+
+Que peut-on dire?
+
+Algorithme de Ford-Fulkerson
+----------------------------
+
+Nous allons maintenant donner un algorithme qui permet de calculer un
+flot maximal.
+
+Mieux, comme l’algorithme du simplexe, cet algorithme va donner des
+résultats théoriques!
+
+On veut transporter le plus grand nombre possible de voyageurs de
+San-Francisco à New-York, sachant qu’il ne reste que quelques places
+dans les avions entre les villes suivantes:
+
+|image|
+
+Soit `R` un réseau, et `F` un flot donné dans ce réseau.
+
+Un chemin allant de la source `s` au puits `p` est
+*`F`-augmentant* si pour chaque arête `ij` du chemin on a:
+
+-  `x_{ij}<u_{ij}` si l’arc `ij` est dans le même sens que
+   dans le réseau
+
+-  `x_{ij}>0` si l’arc `ij` est dans le sens inverse du
+   réseau.
+
+À partir d’un chemin `F`-augmentant, on peut construire un nouveau
+flot `F'` qui sera de volume strictement plus gros.
+
+Le principe de l’algorithme de Ford-Fulkerson est de partir d’un flot
+`F` quelconque, et de l’améliorer itérativement en recherchant des
+chemins `F`-augmentant.
+
+À chaque étape, la recherche d’un chemin `F`-augmentant se fait
+par un parcours en profondeur, de manière similaire à la recherche d’un
+chemin `M`-augmentant dans un graphe biparti. Si cette recherche
+échoue, elle dévoile une coupe de capacité égale au flot, ce qui donne
+un certificat d’optimalité du flot.
+
+On peut toujours initialiser l’algorithme avec un flot nul.
+
+Si toutes les capacités sont entières et finies, chaque itération
+augmente le flot d’au moins `1`. Cet algorithme ne peut donc pas
+cycler, et il termine en un nombre fini d’étapes.
+
+Avec une mauvaise stratégie, et des capacités infinies ou non-entières,
+l’algorithme peut ne pas terminer.
+
+|image|
+
+Avec une stratégie convenable, cet algorithme est en fait polynomial, en
+`O\left(n^3\right)`, même si les capacités sont infinies ou non
+entières.
+
+Pour les réseaux avec peu d’arcs, il y a des algorithmes plus compliqués
+qui permettent d’obtenir d’encore meilleurs bornes. Cf. pour les
+détails.
+
+Conséquences de l’algorithme de Ford-Fulkerson
+----------------------------------------------
+
+Théorème de dualité min-max
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+(Coupe min-Flot max) Dans un réseau, le volume maximal d’un flot est
+égal à la capacité minimale d’une coupe.
+
+Ce théorème est un cas particulier du théorème de dualité de la
+programmation linéaire.
+
+Théorème d’intégralité
+~~~~~~~~~~~~~~~~~~~~~~
+
+Dans notre exemple, on veut transporter des personnes *entières* autant
+que possible!
+
+Qu’aurait-il pu se passer si l’on avait utilisé l’algorithme du
+simplexe?
+
+Qu’a t-on obtenu avec l’algorithme de Ford-Fulkerson?
+
+Est-ce un accident?
+
+(dit d’intégralité) Soit `P` un problème de flot où les
+contraintes sont entières. Alors:
+
+#. Si `P` a une solution, alors il a une solution à coefficients
+   entiers;
+
+#. Si `P` a une solution optimale, alors il a une solution
+   optimale à coefficients entiers.
+
+La solution initiale `0` est à coefficients entiers
+
+À chaque étape, l’amélioration le long du chemin augmentant est entière
+ou infinie.
+
+Le théorème d’intégralité est assez simple. Alors quel est son intérêt ?
+
+Ce que dit fondamentalement le théorème d’intégralité, c’est que dans
+certains cas les méthodes de programmation linéaire peuvent être
+utilisées pour résoudre des problèmes purement combinatoire, ce qui est
+loin d’être trivial!
+
+C’est le sujet de la *combinatoire polyhédrale*. On verra quelques
+exemples la semaine prochaine.
+
+Combinatoire polyhédrale: quelques exemples
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Couvertures et couplages dans les graphes bipartis
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+On va maintenant regarder une application de la programmation linéaire
+pour étudier des graphes non orientés comme le suivant:
+
+|image|
+
+Une *couverture* `C` de ce graphe est un ensemble de sommets qui
+touchent toutes les arêtes, comme par exemple
+`C:=\left\{ 1,3,4,7,8\right\} `:
+
+|image|
+
+On a `8` petits villages reliés par des routes. En cas d’accident
+de la route, on veut que les pompiers puissent intervenir rapidement. Le
+prefet impose que lorsqu’une route relie deux villages, il y ait une
+caserne de pompier dans au moins l’un des deux villages. Évidemment le
+budget est serré, donc on veut construire des casernes de pompier dans
+un nombre minimal de villages.
+
+Modélisation: Chaque village est représenté par un sommet du graphe
+précédent, les arêtes représentant les routes. Résoudre notre problème
+revient à chercher une couverture de taille minimale du graphe.
+
+Un *couplage* `M` de ce graphe est un ensemble d’arêtes qui ne se
+touchent pas, comme par exemple
+`M:=\left\{ \left\{ 1,3\right\} ,\left\{ 4,5\right\} ,\left\{ 7,8\right\} \right\} `:
+
+|image|
+
+On veut loger un groupe de `8` personnes dans un hotel, avec des
+chambres simples et doubles. Pour minimiser les dépenses, on utiliser le
+maximum de chambres doubles. D’un autre côté on ne veut pas forcer deux
+personnes qui ne se connaissent pas bien à partager une chambre.
+
+Modélisation: chaque sommet du graphe précédent représente une personne,
+et chaque arête relie deux personnes qui se connaissent bien. Résoudre
+notre problème revient alors à rechercher un couplage de taille maximale
+dans le graphe.
+
+Montrer que pour un couplage `M` et une couverture `C` d’un
+même graphe, on a toujours `\left|M\right|\leq\left|C\right|`.
+
+Comme `C` est une couverture, chaque arête de `M` devra être
+touchée par au moins un sommet dans `C`. De plus, `M` étant
+un couplage, chaque sommet de `C` touche au plus une arête de
+`M`. Donc, on a bien `\left|M\right|\leq\left|C\right|`.
+
+Peut-on trouver `M` et `C` de façon à avoir égalité ?
+
+Dans notre exemple, non. Par contre, on va voir que pour certaines
+classes de graphe, cela va être vrai: on aura un théorème de dualité
+min-max. Comme par hasard, c’est une conséquence de la programmation
+linéaire.
+
+On appelle *graphe biparti* un graphe dont on peut partitioner les
+sommets en deux paquets `A` et `B` de sorte que toutes les
+arêtes soient entre `A` et `B`:
+
+|image|
+
+On veut rechercher un couplage maximal du graphe précédent. Montrer
+comment on peut résoudre ce problème en utilisant un problème de flot.
+
+Utiliser l’algorithme de Ford-Fulkerson pour le résoudre.
+
+On appelle cela la Méthode du chemin augmentant . Pourquoi?
+
+Chaque solution entière `F` du problème de flot correspond à un
+couplage `M` du graphe biparti (les arêtes sur lesquelles passent
+une unité), avec `\left|M\right|=\left|F\right|`. Maximiser le
+flot revient à rechercher un couplage de taille max. *Le théorème
+d’intégralité nous garanti que Ford-Fulkerson donnera bien une solution
+optimale entière*!
+
+Prendre maintenant la coupe minimale donnée par l’algorithme de
+Ford-Fulkerson, et définir `C` l’ensemble des sommets `a` du
+graphe biparti tels que:
+
+-  soit `a` est du côté de la source et `a` n’est pas dans
+   la coupe.
+
+-  soit `a` est du côté du puit et `a` est dans la coupe.
+
+#. Que constate-t’on?
+
+Est-ce une coïncidence?
+
+Soit `G` un graphe biparti, `M` un couplage maximal donné
+par l’algorithme de Ford-Fulkerson, et `C` l’ensemble de sommets
+obtenu comme ci-dessus. Montrer que `C` est une couverture et que
+`\left|M\right|=\left|C\right|`.\ ` `
+
+(König-Egerváry) Dans tout graphe biparti, la taille d’un couplage
+maximal est égale à la taille d’une couverture minimale.
+
+C’est une exemple typique où le théorème de dualité de la programmation
+linéaire donne un théorème min-max reliant deux problèmes combinatoires
+qui ne sont pas en lien direct a priori.
+
+Utiliser la méthode du chemin augmentant pour rechercher un couplage
+maximal des graphes suivants (on pourra partir du couplage suggéré):
+
+|image|
+
+|image|
+
+|image|
+
+
+Problème des mines à ciel ouvert
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Des études géologiques ont permis de déterminer précisément la nature du
+sous-sol, et l’emplacement des gisements orifères à l’endroit ou l’on a
+décidé de creuser une mine à ciel ouvert. Certains gisements sont
+profonds, et il n’est pas clair qu’il soit rentable d’excaver tout le
+sol au-dessus pour y accéder.
+
+Modèle: le sous-sol a été délimité en un certain nombre de blocs. Pour
+chaque bloc `i`, on connaît le coût `C_i` d’excavation, et
+le profit `P_i` que l’on peut escompter de son traitement.
+
+Au final, on associe à chaque bloc `i` la quantité
+`w_i=C_i-P_i`. Si l’on ne considère pas les autres blocs, il
+est rentable de creuser `i` si et seulement si `w_i<0`.
+
+On veut déterminer quels blocs on doit creuser pour maximiser le profit
+total `-\sum_iw_i` (ou autrement dit minimiser
+`\sum_iw_i`).
+
+Maintenant, il y a des contraintes supplémentaires: si un bloc `i`
+est sous un bloc `j`, on ne peux pas creuser `i` sans
+creuser `j`!
+
+On introduit un ordre partiel, de sorte que `i<j` si pour creuser
+`i` on doit creuser `j`.
+
+Comme on le verra, la forme des blocs, et le type d’ordre partiel n’est
+pas relevant.
+
+On considère le sous-sol suivant:
+
+Comment modéliser notre problème sous forme de problème de flot max ?
+
+La modélisation des contraintes de précédences est un peu astucieuse!
+
+On introduit le réseau suivant:
+
+C’est la remarque suivante qui va faire marcher la machine:
+
+Soit `C` une coupe.
+
+S’il existe deux blocs `i<j`, avec `i\in C` et
+`j\in C`, alors `C` est de capacité infinie.
+
+La réciproque est vraie.
+
+Les coupes de capacité finie sont en correspondance avec les coupes
+respectant les contraintes.
+
+Maintenant, on peut vérifier que la capacité d’une coupe finie vaut
+exactement
+
+.. MATH:: \sum_{i\in C,\textrm{ }i\textrm{ bloc non rentable}}w_i-\sum_{i\not\in C,\textrm{ }i\textrm{ bloc rentable}}w_i.
+
+Quitte à rajouter le terme constant
+`\sum_{i,\textrm{ }i\textrm{ bloc}}w_i`, on est en train de
+calculer le profit lorsque l’on enlève les blocs `i` avec
+`i\in C`.
+
+Résumé: Soit `I` un ensemble de blocs, et `C` la coupe
+`\left\{ s\right\} \cup I`.
+
+-  Si `I` ne satisfait pas les contraintes, la capacité de
+   `C` est infinie.
+
+-  Si `I` satisfait les contraintes, la capacité de `C` est
+   l’opposé du profit.
+
+Maximiser le profit revient à trouver une coupe min.
+
+En termes pédants: on peut résoudre par un algorithme de flot le
+problème de trouver une section finale de poids minimal dans un ordre
+partiel.
+
+
+.. |image| image:: maison
+.. |image| image:: Chartreuse
+.. |image| image:: \lyxdot \lyxdot /\lyxdot \lyxdot /RO/Notes/flot
+.. |image| image:: \lyxdot \lyxdot /\lyxdot \lyxdot /RO/Notes/flot-voyageurs
+.. |image| image:: \lyxdot \lyxdot /\lyxdot \lyxdot /RO/Notes/flot-mauvais
+.. |image| image:: \lyxdot \lyxdot /\lyxdot \lyxdot /RO/Notes/graphe
+.. |image| image:: \lyxdot \lyxdot /\lyxdot \lyxdot /RO/Notes/graphe-couverture
+.. |image| image:: \lyxdot \lyxdot /\lyxdot \lyxdot /RO/Notes/graphe-couplage
+.. |image| image:: \lyxdot \lyxdot /\lyxdot \lyxdot /RO/Notes/biparti
+.. |image| image:: \lyxdot \lyxdot /\lyxdot \lyxdot /RO/Notes/biparti2
+.. |image| image:: \lyxdot \lyxdot /\lyxdot \lyxdot /RO/Notes/couplage2
+.. |image| image:: \lyxdot \lyxdot /\lyxdot \lyxdot /RO/Notes/couplage-berge

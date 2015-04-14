@@ -1,0 +1,1823 @@
+
+Applications
+------------
+
+Jeux matriciels
+~~~~~~~~~~~~~~~
+
+Le jeu de Morra
+^^^^^^^^^^^^^^^
+
+Règles du jeu (pour deux personnes, Louis et Claire).
+
+À chaque tour, chaque joueur cache un ou deux pions, et essaye de
+parier, à voix haute, combien de pions l’autre joueur a caché. Si un
+seul des joueurs a parié la bonne solution, son score augmente d’autant
+de point qu’il y a de pions cachés en tout; le score de l’autre joueur
+diminue du même nombre de points. Sinon, rien ne ce passe. Par exemple,
+si Claire cache 2 pions et parie 1 tandis que Louis cache 2 pions et
+parie 2, Louis gagne 4 points et Claire en perds 4.
+
+Le but est de trouver une stratégie gagnante.
+
+Jouez!
+
+À chaque étape, chaque joueur a le choix entre 4 actions:
+
+-  [1,1]: Cacher 1 pion, parier 1 pion
+
+-  [1,2]: Cacher 1 pion, parier 2 pions
+
+-  [2,1]: Cacher 2 pions, parier 1 pion
+
+-  [2,2]: Cacher 2 pions, parier 2 pions
+
+Chacune de ces options est appelée *stratégie pure*.
+
+Est-ce que suivre une stratégie pure est une stratégie raisonnable ?
+
+Quelles autres stratégies ?
+
+Claire et Louis font un long match.
+
+Stratégie de Claire: inconnue; elle a joué `c_1` fois [1,1],
+`c_2` fois [1,2], `c_3` fois [2,1] et `c_4` fois
+[2,2].
+
+Stratégie de Louis: lancer une pièce à chaque tour pour choisir entre
+[1,2] et [2,1].
+
+Calculer les gains et pertes de Claire et Louis.
+
+Résultat:
+
+Gain de Louis: `(c_1-c_4)/2`.
+
+Perte moyenne maximale à chaque tour: `1/2`.
+
+Une stratégie aléatoire de ce type est appellée stratégie mixte.
+
+Généralisation: on suppose que Louis se fixe une stratégie mixte.
+Caractérisez la meilleure stratégie de contre-attaque de Claire,
+c’est-à-dire celle qui minimise le gain moyen de Louis.
+
+Comment caractériser la meilleure stratégie mixte pour Louis ?
+
+Jeux matriciels
+^^^^^^^^^^^^^^^
+
+Chaque matrice `A=(a_{ij})` définit un jeu. À chaque tour, le
+joueur par Ligne (Louis) choisit une ligne `i` parmi les `m`
+lignes, et le joueur par Colonnes (Claire) choisit une colonne `j`
+parmi les `n` colonnes.
+
+Le gain pour Louis est le coefficient `a_{ij}`:
+
+-  Si `a_{ij}\geq0`, Louis reçoit `a_{ij}` de Claire
+
+-  Si `a_{ij}\leq0`, Claire reçoit `-a_{ij}` de Louis
+
+-  Si `a_{ij}=0`, il n’y a pas d’échange
+
+Écrire la matrice pour le jeu de Morra.
+
+Écrire la matrice pour le jeu papier/ciseaux/caillou/puits.
+
+Dans un long match, Louis adopte une *stratégie mixte*, en choisissant
+au hasard la stratégie pure `i` avec une probabilité fixée
+`x_i`. Claire joue selon une stratégie de son choix: à la fin du
+match, elle a joué `c_j` fois la stratégie pure `j`.
+
+On note `N:=\sum_ic_i` et `y_i:=\frac{c_i}N`.
+Calculer le gain moyen par tour pour Louis.
+
+Les vecteurs `x:=(x_1,\ldots,x_m)` et
+`y:=(y_1,\ldots,y_n)` sont dit *stochastiques*:
+
+.. MATH:: x_i\geq0\textrm{ et }x_1+\cdots+x_m=1.
+
+On considère `x:=[x_1,\ldots,x_m]` comme un vecteur ligne, et
+`y:=[y_1,\ldots,y_n]^T` comme un vecteur colonne, de façon à
+pouvoir écrire commodément le gain de Louis sous la forme:
+
+.. MATH:: xAy.
+
+Louis adopte une stratégie mixte donnée. Caractériser le gain au pire
+pour Louis.
+
+Ici, `x` est constant. Cela peut se mettre sous la forme du
+programme linéaire en `y`:
+
+.. MATH:: \min_y\textrm xAy
+
+Si Louis veut une bonne garantie pour maintenir ces gains hauts (ou ses
+pertes faibles), il peut chercher une stratégie mixte qui maximise la
+quantité `\min_y\textrm xAy`.
+
+On appelle une telle stratégie mixte *optimale*; son gain moyen vaut
+
+.. MATH:: \max_x\textrm{ }\min_y\textrm{ }xAy
+
+Est-ce que la stratégie mixte optimale est la meilleure stratégie ?
+
+Comment calculer la stratégie optimale ?
+
+Tel quel, le problème ne se met pas sous la forme d’un programme
+linéaire. On avait vu une astuce pour se débarasser d’un `\min`
+dans les contraintes; celle ci ne s’applique cependant que lorsque l’on
+prend le `\min` d’un nombre fini d’expressions, alors qu’ici il y
+en a a priori autant que de choix de `y`.
+
+On peut toujours atteindre la quantité `\min_y\textrm{ }xAy`
+avec un `y` de la forme:
+
+.. MATH:: (0,\ldots,0,1,0,\ldots,0).
+
+Autrement dit:
+
+.. MATH:: \min_y\textrm{ }xAy=\min_j\sum_{i=1}^ma_{ij}x_i.
+
+Interprétation ?
+
+Clairement, pour une stratégie pure `j` donnée:
+
+.. MATH:: \min_y\textrm{ }xAy\leq\sum_{i=1}^ma_{ij}x_i.
+
+Maintenant, supposons que `j_0` minimise
+`\sum_{i=1}^ma_{ij_0}x_i`:
+
+.. MATH:: \sum_{i=1}^ma_{ij}x_i\geq\sum_{i=1}^ma_{ij_0}x_i\textrm{ pour }j=1,\ldots,n.
+
+Alors, si `y:=(y_1,\ldots,y_n)` est un vecteur stochastique,
+on a:
+
+.. MATH:: xAy=\sum_{j=1}^n\sum_{i=1}^mx_ia_{ij}y_j=\sum_{j=1}^ny_j\left(\sum_{i=1}^ma_{ij}x_i\right)\geq\sum_{j=1}^ny_j\left(\sum_{i=1}^ma_{ij_0}x_i\right)=\left(\sum_{j=1}^ny_j\right)\left(\sum_{i=1}^ma_{ij_0}x_i\right).
+
+Donc, comme voulu,
+
+.. MATH:: xAy\geq\sum_{i=1}^ma_{ij_0}x_i
+
+Formuler le problème de trouver une stratégie mixte optimale pour Louis
+comme un programme linéaire.
+
+Supposons que Claire veuille aussi adopter une stratégie mixte optimale.
+Formuler de même son problème sous forme de programme linéaire.
+
+(Théorème minimax). Pour toute matrice `m\times n` `A`, il
+existe un vecteur stochastique `x^*` de longueur `m`, et
+un vecteur stochastique `y^*` de longueur `n` tel que:
+
+.. MATH:: \min_y\textrm{ }x^*Ay=\max_x\textrm{ }xAy^*,
+
+ où le minimum est pris sur tout les vecteurs stochastiques `y` de
+longueur `n`, et le maximum est pris sur tout les vecteurs
+stochastiques `x` de longueur `m`.
+
+Interprétation ?
+
+Application immédiate du théorème de dualité.
+
+Si `A` est interprétée comme un jeu, la *valeur du jeu* est la
+quantité:
+
+.. MATH:: \min_y\textrm{ }x^*Ay=\max_x\textrm{ }xAy^*.
+
+Calculer la valeur du jeu de Morra et du jeu
+caillou/pierre/ciseaux/puit.
+
+D’où vient cette particularité ?
+
+Stratégie cachée / stratégie révélée
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Est-ce que révéler sa stratégie à son adversaire, diminue l’espérance de
+gain?
+
+Morra modifié
+^^^^^^^^^^^^^
+
+Il n’est pas très pratique de devoir annoncer simultanément les paris.
+
+Est-ce que le jeu est modifié si Claire annonce toujours son pari en
+premier ?
+
+Faire l’analyse de ce nouveau jeu.
+
+Bluff et antibluff
+^^^^^^^^^^^^^^^^^^
+
+Jeu de poker avec trois cartes (jeu inventé et analysé par Kuhn en
+1950).
+
+A et B déposent chacun un pion, puis reçoivent chacun une carte.
+
+Ensuite, A peut parier un pion supplémentaire ou passer.
+
+De même pour B, puis pour A, jusqu’à ce que:
+
+-  Un pari est répondu par un passe: celui qui a parié gagne tous les
+   pions;
+
+-  | Un pari est répondu par un pari ou un passe est répondu par un
+   passe:
+   | Celui qui a la plus haute carte gagne tous les pions.
+
+Jouez!
+
+Étant donné une distribution des cartes, décrire les stratégies pures
+pour `A` et `B`.
+
+Décrire toutes les stratégies pures pour A et B.
+
+Quelle est la taille de la matrice des gains ?
+
+Y-a-t’il des stratégies que l’on peut éliminer d’office ?
+
+Au final, on peut obtenir comme matrice de gain:
+
+\|c\|\|c\|c\|c\|c\| & 124 & 124 & 314 & 324112 & 0 & 0 &
+`-\frac16` & `-\frac16`\ 113 & 0 &
+`\frac16` & `\frac13` & `-\frac16`\ 122 &
+`-\frac16` & `-\frac16` & `\frac16` &
+`\frac16`\ 123 & `-\frac16` & 0 & 0 &
+`\frac16`\ 312 & `\frac16` & `-\frac13` &
+0 & `-\frac12`\ 313 & `\frac16` &
+`-\frac16` & `-\frac16` & `-\frac12`\ 322
+& 0 & `-\frac12` & `\frac13` &
+`-\frac16`\ 323 & 0 & `-\frac13` &
+`\frac16` & `-\frac16`
+
+Stratégie mixte pour `A`:
+`[\frac13,0,0,\frac12,\frac16,0,0,0]`; stratégie mixte
+pour `B`: `[\frac23,0,0,\frac13]^T`.
+
+Prouver que ces stratégies sont optimales.
+
+Lorsque A a la carte `1` en main, calculer en quelles proportions
+il doit choisir entre les 4 stratégies élémentaires.
+
+Résumé de la stratégie de A:
+
+-  Avec la carte `1`: mixer 1 et 3 en proportions 5:1;
+
+-  Avec la carte 2: mixer 1 et 2 en proportions 1:1;
+
+-  Avec la carte 3: mixer 2 et 3 en proportions 1:1.
+
+Pour A, bluffer ou contre-bluffer est rentable.
+
+Résumé de la stratégie de B:
+
+-  Avec la carte `1`: mixer 1 et 3 en proportions 2:1;
+
+-  Avec la carte 2: mixer 1 et 2 en proportions 2:1;
+
+-  Avec la carte 3: toujours utiliser 4.
+
+Pour B, bluffer est rentable, mais pas contre-bluffer.
+
+Réseaux de transport
+--------------------
+
+Objectif: étudier une certaine classe de problèmes de programmation
+linéaire sur laquelle l’algorithme du simplexe prends une forme simple
+et efficace.
+
+Un exemple d’application
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Considérons le problème de transport d’électricité suivant.
+
+Les noeuds sont des villes.
+
+Les arcs sont des câbles électriques, à sens unique, reliant les villes.
+
+|image|
+
+*Sources* (noeuds avec production): 6: 9 MW; 7: 5 MW
+
+*Puits* (noeuds avec consommation): 3: 6 MW; 4: 6 MW; 5: 2 MW
+
+*Noeuds intermédiaires* (noeuds sans production ni consommation): 1,2
+
+Il y a des pertes en lignes, donc transporter du courant a un coût. On
+le modélise par un coût par unité de courant transportée sur chaque arc
+entre la ville `i` et la ville `j`.
+
+|image|
+
+Répartition du flux de courant pour satisfaire la consommation au plus
+bas coût?
+
+Mettre le problème précédent sous forme de problème de programmation
+linéaire. Qu’a-t’il de spécifique ?
+
+-  | Consommation et production sont modélisées par des constantes
+   `b_i` qui représentent la *demande.* On a pour les puits,
+   `b_i>0`, pour les sources `b_i<0`, et pour les noeuds
+   intermédiaires, `b_i=0`;
+   | Attention, sur les graphiques, c’est l’offre qui est représentée!
+   Le signe est inversé!
+
+-  Le coût de transport unitaire le long d’un arc est modélisé par des
+   constantes `c_{ij}`;
+
+-  On modélise le flux de courant en mesurant par `x_{ij}` la
+   quantité de courant transférée directement entre les villes `i`
+   et `j`.
+
+Cette modélisation est *a priori* ambigue: dans le réseau suivant,
+`x_{12}=1`, `x_{23}=1` et `x_{24}=1` peut représenter
+deux situations différentes:
+
+-  Transporter une unité de `1` vers `3` via `2`, et
+   une unité de `2` vers `4` directement;
+
+-  Transporter une unité de `1` vers `4` via `2`, et
+   une unité de `2` vers `3` directement.
+
+|image|
+
+Comme le consommateur ne se soucie pas de l’origine du courant (un watt,
+c’est un watt), et comme le coût dans les deux situations est le même,
+on peut ignorer cette ambiguïté, et considérer que ces deux situations
+sont équivalentes.
+
+Problème standard de transport
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Un problème comme le précédent est appelé *problème standard de
+transport*.
+
+On impose les restrictions suivantes:
+
+-  La consommation totale est égale à la production totale;
+
+-  Les arcs sont orientés, avec au plus un arc dans chaque sens;
+
+-  Le réseau est connexe (cf. ci-dessous).
+
+Ces restrictions permettent d’obtenir un algorithme plus simple et
+élégant. Nous verrons plus tard comment les contourner pour traiter des
+problèmes plus généraux.
+
+Une solution d’un problème de transport peut être modélisé en
+introduisant pour chaque arc allant du noeud `i` au noeud
+`j` une variable `x_{ij}` qui mesure le flux le long de cet
+arc.
+
+Une solution décrite par les valeurs des `x_{ij}` est réalisable
+(faisable) si et seulement si:
+
+-  Chaque `x_{ij}` est positif (le flux est dans le sens de
+   l’arc);
+
+-  Pour chaque noeud intermédiaire, le flux entrant est égal au flux
+   sortant;
+
+-  Pour chaque source, le flux sortant moins le flux entrant est égal à
+   la production;
+
+-  Pour chaque puit, le flux entrant moins le flux sortant est égal à la
+   consommation;
+
+Le *seulement si* est clair; le *si* demanderait une vérification pour
+décider les détails de la réalisation: quel watt venant d’où se retrouve
+où au final.
+
+Les solutions faisables sont donc décrites par un système d’équations de
+la forme:
+
+.. MATH:: x_{14}+x_{24}-x_{45}=6.
+
+(ici, il s’agit du sommet `4` dans notre exemple), et d’inégalités
+du type `x_{14}\geq0`.
+
+Donner une solution faisable pour notre exemple.
+
+Pour des raisons de conventions, on note `n` le nombre de noeuds
+du réseau, et `m` le nombre d’arcs. C’est l’inverse de ce que l’on
+avait utilisé pour les problèmes de programmation linéaire généraux …
+
+La *matrice d’incidence* du réseau est une matrice `A` de taille
+`n\times m`. Les lignes sont indexées par les noeuds du réseau, et
+les colonnes par les arcs. Dans la cellule correspondant à un noeud
+`k` et un arc `ij`, on mets un coefficient valant:
+
+-  `-1` si l’arc part du sommet (`i=k`),
+
+-  `1` si l’arc arrive au sommet `(j=k)`,
+
+-  `0` sinon.
+
+   Là encore les notations ne sont pas parfaites: une paire `ij`
+   indexe un arc, et donc une colonne, et non pas une cellule de la
+   matrice…
+
+Avec cette notation, et en notant `b` le vecteur colonne des
+`b_i`, `x` le vecteur colonne des `x_{ij}`, et
+`c` le vecteur ligne des `c_{ij}` on peut mettre le problème
+sous forme matricielle:
+
+Minimiser: `cx`
+
+Sous les contraintes: `Ax=b` et `x\geq0`.
+
+Écrire sous forme matricielle le problème correspondant à notre réseau:
+
+.. MATH::
+
+   x:=\left[\begin{array}{c}
+   x_{13}\\
+   x_{14}\\
+   x_{15}\\
+   x_{21}\\
+   x_{23}\\
+   x_{24}\\
+   x_{25}\\
+   x_{45}\\
+   x_{61}\\
+   x_{62}\\
+   x_{63}\\
+   x_{67}\\
+   x_{72}\\
+   x_{75}
+   \end{array}\right],\textrm{ }b:=\left[\begin{array}{c}
+   0\\
+   0\\
+   6\\
+   6\\
+   2\\
+   -9\\
+   -5
+   \end{array}\right]
+
+.. MATH::
+
+   A:=\left[\begin{array}{cccccccccccccc}
+   -1 & -1 & -1 & 1 & \textrm{ } & \textrm{ } & \textrm{ } & \textrm{ } & 1 & \textrm{ } & \textrm{ } & \textrm{ } & \textrm{ } & \textrm{ }\\
+   \textrm{ } & \textrm{ } & \textrm{ } & -1 & -1 & -1 & -1 & \textrm{ } & \textrm{ } & 1 & \textrm{ } & \textrm{ } & 1 & \textrm{ }\\
+   1 & \textrm{ } & \textrm{ } & \textrm{ } & 1 & \textrm{ } & \textrm{ } & \textrm{ } & \textrm{ } & \textrm{ } & 1 & \textrm{ } & \textrm{ } & \textrm{ }\\
+   \textrm{ } & 1 & \textrm{ } & \textrm{ } & \textrm{ } & 1 & \textrm{ } & -1 & \textrm{ } & \textrm{ } & \textrm{ } & \textrm{ } & \textrm{ } & \textrm{ }\\
+   \textrm{ } & \textrm{ } & 1 & \textrm{ } & \textrm{ } & \textrm{ } & 1 & 1 & \textrm{ } & \textrm{ } & \textrm{ } & \textrm{ } & \textrm{ } & 1\\
+   \textrm{ } & \textrm{ } & \textrm{ } & \textrm{ } & \textrm{ } & \textrm{ } & \textrm{ } & \textrm{ } & -1 & -1 & -1 & -1 & \textrm{ } & \textrm{ }\\
+   \textrm{ } & \textrm{ } & \textrm{ } & \textrm{ } & \textrm{ } & \textrm{ } & \textrm{ } & \textrm{ } & \textrm{ } & \textrm{ } & \textrm{ } & 1 & -1 & -1
+   \end{array}\right]
+
+.. MATH::
+
+   c:=\left[\begin{array}{cccccccccccccc}
+   c_{13} & c_{14} & c_{15} & c_{21} & c_{23} & c_{24} & c_{25} & c_{54} & c_{61} & c_{62} & c_{63} & c_{67} & c_{72} & c_{75}\end{array}\right]
+
+.. MATH::
+
+   c:=\left[\begin{array}{cccccccccccccc}
+   48 & 28 & 10 & 7 & 65 & 38 & 7 & 56 & 48 & 108 & 24 & 33 & 19\end{array}\right]
+
+On peut vérifier que dans l´égalité `Ax=b`, la quatrième
+composante donne l’équation
+
+.. MATH:: x_{14}+x_{24}-x_{45}=6,
+
+ correspondant au sommet `4`.
+
+Solutions faisables arborescentes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Quelques classes de graphes classiques:
+
+\|c\|c\| Chemin & Cycle\ |image| & |image|\ Graphe non connexe & Graphe
+connexe\ |image| & |image|\ Forêt (graphe acyclique) & Arbre\ |image| &
+|image|
+
+Arbre couvrant du réseau:
+
+|image|
+
+Supposez que seuls les arcs dans l’arbre couvrant précédent peuvent être
+utilisés.
+
+Y-a-t’il une solution ? Est-elle faisable ?
+
+Étant donné un arbre couvrant `T`, il y a une unique solution de
+transport pour satisfaire les contraintes de production et consommation
+en n’utilisant que les arcs de l’arbre couvrant.
+
+Formellement, il existe un unique vecteur `x:=[x_{ij}]` vérifiant:
+
+.. MATH:: Ax=b\textrm{ et }x_{ij}=0\textrm{ pour }ij\textrm{ n}'\textrm{appartenant pas à }T.
+
+On appelle une telle solution *arborescente*.
+
+Si de plus le vecteur `x` vérifie `x\geq0`, c’est une
+*solution arborescente faisable*.
+
+On dit aussi que l’arbre est *faisable*.
+
+Algorithme du simplexe pour les réseaux, une motivation économique
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Description de l’algorithme sur le réseau précédent.
+
+Démonstration algébrique de l’optimalité
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Soit `T` un arbre.
+
+On note `x:=[x_{ij}]` la solution correspondante.
+
+Objectif: comparer le coût `cx` pour la solution `x` avec le
+coût `c\overline{x}`\ pour une autre solution faisable
+`\overline{x}`.
+
+Soit `y:=[y_1,\ldots,y_n]` les prix à chaque noeuds pour la
+solution `x`.
+
+Lors de l’application du simplexe, on a comparé le coût du transport
+`c_{ij}` d’une unité le long de l’arc `ij` par rapport à la
+différence de prix `y_j-y_i` entre les noeuds `i` et
+`j`.
+
+On pose `\overline{c_{ij}}:=c_{ij}-(y_j-y_i)`, et
+`\overline{c}=[\overline{c_{ij}}]` le vecteur ligne correspondant.
+
+Montrer que `\overline{c}=c-yA`.
+
+On a `c\overline{x}=cx+\overline{c}\overline{x}`.
+
+On va utiliser le résultat de l’exercice pour reformuler le coût de
+`\overline{x}` en fonction de `\overline{c}`:
+
+.. MATH:: c\overline{x}=(\overline{c}+yA)\overline{x}=\overline{c}\overline{x}+yA\overline{x}=\overline{c}\overline{x}+yb.
+
+En particulier, `cx=\overline{c}x+yb`.
+
+Comme en plus `\overline{c_{ij}}=0` si `ij\in T` et
+`x_{ij}=0` si `ij\not\in T`, `\overline{c}x=0`, on a
+`cx=yb`.
+
+Conclusion: `c\overline{x}=cx+\overline{c}\overline{x}`.
+
+Si `\overline{c_{ij}}\geq0` pour tout arc `ij`, alors la
+solution `x` est optimale.
+
+Exercice: finissez de le démontrer!
+
+Si `\overline{x}` est une autre solution faisable,
+`x_{ij}\geq0`. Donc
+`\overline{c}\overline{x}=\sum\overline{c_{ij}}\overline{x_{ij}}\geq0`.
+
+Initialisation
+~~~~~~~~~~~~~~
+
+Comment choisir un arbre de départ faisable ?
+
+On va, comme pour le simplexe habituel, introduire un problème
+auxiliaire:
+
+#. Choisir un arbre couvrant `T`.
+
+#. Calculer la solution `x` correspondante.
+
+#. | Si pour un arc `ij` de `T` on a `x_{ij}<0`, la
+   solution est infaisable. Ca n’est pas un problème:
+   | S’il n’existe pas, on ajoute un arc *artificiel* `ji` dans le
+   réseau.
+   | On met `ji` à la place de `ij` dans `T`.
+
+#. L’arbre obtenu est faisable dans le réseau modifié.
+
+Problème: existe-t’il un arbre faisable dans le réseau modifié
+n’utilisant pas d’arc artificiel?
+
+On prend comme fonction de coût
+`w:=\sum_{ij\textrm{ artificiel }}x_{ij}`.
+
+De la sorte, si `x` est une solution faisable du problème
+original, alors `w=0`.
+
+On applique le simplexe. À la fin, on est dans l’une des situations
+suivantes:
+
+#. `w^*>0`: Le problème original est infaisable.
+
+#. | `w^*=0`, et l’arbre final `T_1` n’utilise aucun arc
+   artificiel:
+   | `T_1` est une solution faisable du problème initial, comme
+   voulu.
+
+#. | `w^*=0`, et l’arbre final `T_1` utilise au moins un
+   arc artificiel:
+   | On a clairement `x_{ij}^*=0` pour tous les arcs
+   artificiels.
+   | Comme le réseau est connexe, on peut toujours échanger les arcs
+   artificiels par d’autres arcs non artificiels, sans changer les
+   `x_{ij}^*`.
+
+Terminaison et cyclage
+~~~~~~~~~~~~~~~~~~~~~~
+
+Comme dans le cas général, l’algorithme du simplexe pour les réseaux a
+les propriétés suivantes:
+
+-  Il peut y avoir des situations dégénérées (pivot ne changeant pas le
+   coût);
+
+-  L’algorithme peut cycler, mais seulement en présence de
+   dégénérescence;
+
+-  S’il ne cycle pas, alors il termine;
+
+-  Il y a des stratégies efficaces pour éviter les cycles.
+
+-  Même en évitant les cycles, la complexité au pire peut monter jusqu’à
+   `2^n`;
+
+-  Dans la pratique, il ne cycle jamais; la complexité est inférieure à
+   `n`.
+
+Pour les détails, nous renvoyons à .
+
+Comment contourner les restrictions ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Dans les exercices suivants, on cherche à contourner les restrictions
+sur les problèmes standards de transport.
+
+-  Arcs orientés
+
+-  Égalité de la production et de la consommation
+
+-  Connexité
+
+-  Au plus un arc dans chaque sens entre deux sommets
+
+Dans les problèmes suivants, on veut répartir au mieux le transport
+d’oranges via des réseaux ferroviaires, avec les productions et
+consommations indiquées sur les noeuds, et les coûts de transports
+indiqués sur les arcs. Pour chacun d’entre eux, indiquer si on peut le
+modéliser sous forme de problème standard de transport, et si oui,
+comment.
+
+|image|
+
+|image|
+
+|image|
+
+|image|
+
+Applications du simplexe des problèmes de transports
+----------------------------------------------------
+
+Une usine de barrettes mémoire pour ordinateur doit faire face à une
+demande fluctuante dans le temps. On suppose que pour l’année à venir,
+la demande `d_j` pour chaque mois `j` est connue à
+l’avance (cette hypothèse vaut ce qu’elle vaut).
+
+Pour adapter la production à la demande, l’usine a le choix entre
+plusieurs options:
+
+-  Stocker des barrettes d’un mois sur l’autre, sans limite, mais pour
+   un coût unitaire de `a`.
+
+-  Produire, dans la limite de `r` barrettes par mois, pour un
+   coût unitaire de `b`.
+
+-  Surproduire, dans la limite de `s` barrettes par mois,
+   moyennant un coût unitaire plus élevé `c`.
+
+À la fin de l’année, on veut de plus qu’il n’y ait plus aucun stock,
+afin de faciliter l’inventaire.
+
+Évidemment, l’objectif est d’adapter la production au moindre coût.
+
+Modéliser ce problème sous forme de problème de transport standard.
+
+Un problème d’assignement
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Répartition de cours entre plusieurs professeurs.
+
+Dans le département de mathématiques d’une université aux USA,
+l’évaluation des enseignants par les étudiants a donné au cours des
+derniers semestres les résultats suivants:
+
+\|c\|c\|c\|c\|c\|c\| Cours\\Professeur & Bill & Yu & Luis & John &
+HughCalculus 1 & 3 & 4 & 2,3 & 2,9 & 2,8Differential Equations & 2,25 &
+3,2 & 3,7 & 1,9 & 4,4Statistics & 2,6 & 3,7 & 4,5 & 2.7 & 3,1Calculus 2
+& 3,9 & 4,1 & 2,6 & 3,9 & 2,4Discrete maths & 2,8 & 2,8 & 3,5 & 3,4 &
+4,2
+
+Dans un semestre, chaque cours est enseigné par un professeur, et chaque
+professeur enseigne un cours. Le chef du département veut répartir les
+cours du prochain semestre entre les professeurs de façon à exploiter au
+mieux leurs talents respectifs (ou minimiser la grogne des étudiants, au
+choix…). Il décide de prendre comme mesure de la qualité d’une
+répartition la moyenne sur chaque cours de la note du professeur qui
+l’enseigne.
+
+Modéliser le problème, et indiquer comment on pourrait le résoudre.
+
+Est-on sûr d’obtenir une solution entière ?
+
+(dit d’intégralité) Soit `P` un problème standard de transport où
+les contraintes sont entières (i.e. les `b_i` sont entiers).
+Alors:
+
+#. Si `P` a une solution, alors il a une solution à coefficients
+   entiers;
+
+#. Si `P` a une solution optimale, alors il a une solution
+   optimale à coefficients entiers.
+
+Une solution arborescente pour `P` a toujours des coefficients
+entiers!
+
+En effet, la matrice d’incidence de l’arbre a des coefficients
+`1`, `-1` et `0`, et on peut la mettre sous forme
+triangulaire avec des coefficients `1` et\ `-1` sur la
+diagonnale. Du coup, lorsque l’on calcule le flux le long des arcs de
+l’arbre (ce qui revient à inverser la matrice), on obtient uniquement
+des flux entiers.
+
+Le théorème d’intégralité est assez simple. Alors quel est son intérêt ?
+
+Le problème précédent est appellé *problème d’assignement*, et est
+essentiellement *combinatoire* (les variables sont discrètes).
+
+Ce que dit fondamentalement le théorème d’intégralité, c’est que dans
+certains cas les méthodes de programmation linéaire peuvent être
+utilisées pour résoudre des problèmes purement combinatoire, ce qui est
+loin d’être trivial!
+
+C’est le sujet de la *combinatoire polyhédrale*.
+
+Quelques commentaires sur la programmation linéaire en coefficients entiers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Les problèmes de programmation linéaire en entiers (on impose que les
+solutions soit à coordonnées entières) sont notoirement difficile. Ils
+sont la plupart du temps NP-complets, et nécessitent la plupart du temps
+l’utilisation d’algorithme de backtrack (essai-erreur) qui ne sont pas
+polynomiaux.
+
+Par contre, si par chance on peut les mettre sous forme de problèmes
+standards de transport, le théorème d’intégralité permet de les résoudre
+par l’algorithme du simplexe.
+
+Un problème de sac-à-dos:
+
+On a des objets de différentes tailles `l_1,\ldots,l_n` et
+différentes valeurs `v_1,\dots,v_n`\ que l’on veut mettre dans
+un sac-à-dos de taille `l`. Évidemment le sac est trop petit, et
+l’on doit donc faire un choix. Le but est de remplir au maximum le
+sac-à-dos. Cela peut se mettre sous la forme:
+
+Maximiser `v=\sum_{i=1}^nx_iv_i`, sous les contraintes
+`0\leq x_i\leq1`, `x_i` entier.
+
+Peut-on le mettre sous forme de problème de transport ?
+
+Le problème d’assignement cours/professeurs.
+
+Est-ce que ce ce problème est polynomial ?
+
+On note que l’algorithme du simplexe *n’est pas polynomial!*
+
+Par contre, il existe un autre algorithme, dit de l’\ *ellipsoïde*, pour
+résoudre les problème de programmation linéaire qui est polynomial. Il
+est amusant de constater qu’en pratique il est moins efficace que
+l’algorithme du simplexe. Nous renvoyons au Chvatal pour une description
+complète de cet algorithme.
+
+Toujours est-il que cela peut permettre de montrer que le problème
+d’assignement est polynomial.
+
+Combinatoire polyhédrale
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Pour des détails sur ce domaine, nous recommandons particulièrement la
+lecture de l’article sur le sujet dans le *handbook of combinatorics.*
+
+L’idée générale de la combinatoire polyhédrale est la suivante:
+
+-  On part d’un problème d’optimisation combinatoire du type «maximiser
+   une certaine quantité sur un ensemble discret `E`\ »
+
+-  On le transforme en problème de programmation linéaire, en assignant
+   aux éléments de `E` des vecteurs, et en considérant le
+   polyhèdre convexe qu’ils engendrent.
+
+-  Ce convexe peut être décrit par des inégalités (Comment ? c’est
+   l’étape difficile!).
+
+-  On a alors un problème de programmation linéaire, que l’on peut
+   résoudre.
+
+-  Si tout ce passe bien, le théorème d’intégralité garantit que la
+   solution trouvée correspond bien à un des vecteurs extrémaux
+   correspondant aux éléments de `E`.
+
+Le théorème de dualité donne alors des relations de type min-max entre
+des problèmes combinatoires.
+
+Théorème de König (lemme des mariages)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+On a un ensemble de `n` filles et `n` garçons que l’on veut
+marier ensemble. Dans notre grande magnanimité, on veut bien faire
+attention à ne pas marier deux personnes qui ne se connaissent pas.
+
+Si chaque fille connait exactement `k\geq1` garçons et chaque
+garçon connaît exactement `k` filles, alors on peut arranger
+`n` mariages de façon à ne pas marier des inconnus.
+
+Prouvez ce théorème en construisant le problème de transport qui va
+bien.
+
+On associe à chaque fille `i` une source `r_i` produisant
+une unité, et à chaque garçon un puit `s_i` consommant une
+unité, et on met un arc entre chaque couple `r_i` `s_i`
+se connaissant.
+
+Indépendamment du coût sur les arcs, le problème est faisable:
+
+Il suffit de mettre un flux de `\frac1k` sur chaque arc.
+
+Le théorème d’intégralité indique alors qu’il y a une solution entière.
+
+Cette solution entière donne une façon d’organiser les mariages.
+
+Couvertures et couplages dans les graphes bipartis
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+On va maintenant regarder une application de la programmation linéaire
+pour étudier des graphes non orientés comme le suivant:
+
+|image|
+
+Une *couverture* `C` de ce graphe est un ensemble de sommets qui
+touchent toutes les arêtes, comme par exemple
+`C:=\left\{ 1,3,4,7,8\right\} `:
+
+|image|
+
+On a `8` petits villages reliés par des routes. En cas d’accident
+de la route, on veut que les pompiers puissent intervenir rapidement. Le
+prefet impose que lorsqu’une route relie deux villages, il y ait une
+caserne de pompier dans au moins l’un des deux villages. Évidemment le
+budget est serré, donc on veut construire des casernes de pompier dans
+un nombre minimal de villages.
+
+Modélisation: Chaque village est représenté par un sommet du graphe
+précédent, les arêtes représentant les routes. Résoudre notre problème
+revient à chercher une couverture de taille minimale du graphe.
+
+Un *couplage* `M` de ce graphe est un ensemble d’arêtes qui ne se
+touchent pas, comme par exemple
+`M:=\left\{ \left\{ 1,3\right\} ,\left\{ 4,5\right\} ,\left\{ 7,8\right\} \right\} `:
+
+|image|
+
+On veut loger un groupe de `8` personnes dans un hotel, avec des
+chambres simples et doubles. Pour minimiser les dépenses, on utiliser le
+maximum de chambres doubles. D’un autre côté on ne veut pas forcer deux
+personnes qui ne se connaissent pas bien à partager une chambre.
+
+Modélisation: chaque sommet du graphe précédent représente une personne,
+et chaque arête relie deux personnes qui se connaissent bien. Résoudre
+notre problème revient alors à rechercher un couplage de taille maximale
+dans le graphe.
+
+Montrer que pour un couplage `M` et une couverture `C` d’un
+même graphe, on a toujours `\left|M\right|\leq\left|C\right|`.
+
+Comme `C` est une couverture, chaque arête de `M` devra être
+touchée par au moins un sommet dans `C`. De plus, `M` étant
+un couplage, chaque sommet de `C` touche au plus une arête de
+`M`. Donc, on a bien `\left|M\right|\leq\left|C\right|`.
+
+Peut-on trouver `M` et `C` de façon à avoir égalité ?
+
+Dans notre exemple, non. Par contre, on va voir que pour certaines
+classes de graphe, cela va être vrai: on aura un théorème de dualité
+min-max. Comme par hasard, c’est une conséquence de la programmation
+linéaire.
+
+On appelle *graphe biparti* un graphe dont on peut partitioner les
+sommets en deux paquets `A` et `B` de sorte que toutes les
+arêtes soient entre `A` et `B`:
+
+|image|
+
+On veut rechercher un couplage maximal du graphe précédent. Montrer
+comment on peut résoudre ce problème en utilisant un réseau de
+transport.
+
+On peut par exemple introduire le réseau suivant.
+
+|image|
+
+Chaque solution entière du réseau correspond à un couplage `M` du
+graphe biparti (les arêtes sur lesquelles passent une unité). Le coût de
+cette solution est `4-\left|M\right|`. Donc minimiser ce coût
+revient à rechercher un couplage de taille max.
+
+Voilà une solution arborescente optimale du réseau; on a indiqué sur les
+sommets les prix relatifs, et sur les arêtes les quantités transportées:
+
+|image|
+
+La taille maximale d’un couplage `M` est donc `3`.
+
+On remarque que les sommets du graphe biparti de prix `1` à gauche
+et de prix `0` à droite (en grisé) forment une couverture optimale
+de taille `3` du graphe biparti.
+
+Est-ce une coïncidence?
+
+Soit `T` une solution arborescente optimale pour le réseau associé
+à un graphe biparti quelconque. On définit `M` et `C` comme
+ci-dessus.
+
+#. Vérifier que si `ij` est une arête du graphe biparti, et si
+   `i\not\in C`, alors `j\in C`.
+
+#. En déduire que `C` est une couverture du graphe biparti.
+
+#. Vérifier que si `i` est dans `C`, alors `i`
+   appartient à une des arêtes du couplage `M`.
+
+#. Vérifier que si `ij` est une des arêtes du couplage `M`,
+   alors `i` et `j` ne sont pas simultanément dans
+   `C`.
+
+#. En déduire que `\left|M\right|=\left|C\right|`.
+
+(König-Egerváry) Dans tout graphe biparti, la taille d’un couplage
+maximal est égale à la taille d’une couverture minimale.
+
+C’est une exemple typique où le théorème de dualité de la programmation
+linéaire donne un théorème min-max reliant deux problèmes combinatoires
+qui ne sont pas clairement reliés a priori.
+
+Problèmes de transports avec limites de capacités
+-------------------------------------------------
+
+Modéliser un réseau routier par un réseau de transport sous forme
+standard n’est pas très réaliste: sur une autoroute donnée, on ne peut
+pas faire passer autant de camions que l’on veut !
+
+Dans cette section, nous allons regarder une généralisation des
+problèmes de transports, dans lesquels on ajoutera des contraintes de
+capacités maximales.
+
+Nous verrons rapidement que l’algorithme du simplexe et les résultats
+théoriques en découlant peuvent être étendus sans grosses difficultés.
+Puis nous étudierons quelques applications.
+
+Problème de transport avec limites de capacités sous forme standard:
+
+Minimiser: `cx`
+
+Sous les contraintes: `Ax=b` et `0\leq x\leq u`,
+
+où `A` est la matrice d’incidence d’un réseau.
+
+(`u` pour *upper bound*).
+
+Peut-on mettre le problème suivant sous forme standard ?
+
+Minimiser: `cx`
+
+Sous les contraintes: `Ax=b` et `l\leq x\leq u`.
+
+Donner une solution optimale pour le problème suivant:
+
+|image|.
+
+Comme on peut le constater dans l’exercice précédent, on ne peut pas
+toujours espérer trouver une solution optimale, ni même une solution
+faisable arborescente: c’est-à-dire telle qu’on utilise aucune arête en
+dehors d’un certain arbre `T`.
+
+On va donc relâcher cette contrainte. Toute arête en dehors de l’arbre
+`T` devra être soit non utilisée, soit au contraire utilisée à
+pleine capacité:
+
+Soit `T` un arbre couvrant du réseau.
+
+Une solution `x` est *`T`-arborescente* si tout arc
+`ij\not\in T` on a:
+
+.. MATH:: x_{ij}=0\textrm{ ou }x_{ij}=u_{ij}.
+
+Une solution `x` est *arborescente* s’il existe un arbre couvrant
+`T` tel que `x` est `T`-arborescente.
+
+Donner une solution arborescente au problème précédent.
+
+Étant donné un arbre `T`, a-t’on unicité de la solution
+arborescente vis-à-vis de cet arbre ?
+
+Montrer que si les `b_i` et les `u_{ij}` sont entiers,
+alors toute solution arborescente est entière.
+
+Nous allons maintenant voir sur un exemple comment on peut adapter
+l’algorithme du simplexe pour les réseaux.
+
+Dans le cas classique (sans limites de capacités), le principe était de
+faire rentrer dans l’arbre `T` une arête `ij` inutilisée
+(`x_{ij}=0`) rentable (`y_i+c_{ij}<y_j`) de façon à
+pouvoir l’utiliser.
+
+Ici, il y a un autre cas de figure: faire rentrer une arrête `ij`
+utilisée à pleine capacité (`x_{ij}=u_{ij}`) alors qu’elle n’est
+pas rentable (`y_i+c_{ij}>y_j`), de façon à pouvoir diminuer
+son utilisation.
+
+Cf. .
+
+Soit `x` une solution `T`-arborescente telle que pour toute
+arête `ij` en dehors de l’arbre, on ait:
+
+-  soit `x_{ij}=0` et `y_i+c_{ij}\geq y_j`,
+
+-  soit `x_{ij}=u_{ij}` et `y_i+c_{ij}\leq y_j`.
+
+Alors `x` est une solution optimale.
+
+La démonstration est très similaire à celle du cas sans limites de
+capacités.
+
+On va considérer une autre solution faisable `\overline{x}` du
+problème, et comparer les coûts `cx` et `c\overline{x}`
+correspondants.
+
+On pose `\overline{c_{ij}}:=c_{ij}-(y_j-y_i)`, et
+`\overline{c}=[c_{ij}]` le vecteur ligne correspondant.
+
+`\overline{c_{ij}}` mesure le coût relatif:
+
+-  `\overline{c_{ij}}=0` si `ij` est dans `T`
+
+-  `\overline{c_{ij}}\geq0` si `x_{ij}=0` (non rentable
+   d’utiliser l’arc `ij`).
+
+-  `\overline{c_{ij}}\leq0` si `x_{ij}=u_{ij}` (rentable
+   d’utiliser l’arc `ij` à pleine capacité).
+
+On note que dans les trois cas,
+`\overline{c_{ij}}\overline{x_{ij}}\geq\overline{c_{ij}}x_{ij}`.
+Donc matriciellement `\overline{c}\overline{x}\geq\overline{c}x`.
+
+Comme précédemment on peut écrire `\overline{c}` matriciellement
+sous la forme `\overline{c}=c-yA`.
+
+De plus, `x` et `\overline{x}` sont solutions faisables et
+vérifient donc toutes deux `Ax=b`.
+
+On en déduit alors:
+
+.. MATH:: c\overline{x}=\overline{c}\overline{x}+yA\overline{x}=\overline{c}\overline{x}+yb\geq\overline{c}x+yb=\overline{c}x+yAx=cx.
+
+Problèmes de flot maximum
+-------------------------
+
+Introduction
+~~~~~~~~~~~~
+
+*Problème de flot max:*
+
+-  Réseau avec source et puits
+
+-  Pas de coûts sur les arcs
+
+-  Contraintes de capacités sur les arcs
+
+-  Production et consommation nulle sur chaque noeud intermédiaire
+
+|image|
+
+Objectif:
+
+Maximiser le *volume* du flot, c’est-à-dire la quantité transportée
+entre `s` et `p`.
+
+Un dimanche soir, maximiser le nombre de voitures allant d’Albertville à
+Lyon, en les répartissant entre les différentes routes possibles.
+
+Mettre le problème de flot dessiné ci-dessus sous forme de problème de
+transport standard avec limites de capacités
+
+Clairement, cela se généralise à tout problème de flot max.
+
+Que peut-on en déduire ?
+
+-  On a un algorithme de résolution (simplexe)
+
+-  Le problème de flot est polynomial
+
+-  On a un théorème d’intégralité:
+
+   Si les contraintes de capacités sont entières (ou infinies), alors:
+
+   -  Soit le problème est non borné: |image|
+
+   -  Soit le problème a une solution entière
+
+-  On doit bien avoir une dualité !
+
+Dualité: le théorème flot max / coupe min
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Une *coupe* `C` dans un réseau est un ensemble de sommets du
+réseau contenant la source.
+
+La capacité de la coupe `C` est la somme des capacités des arrêtes
+sortantes de `C`.
+
+Dans notre réseau, la coupe `C=\left\{ s\right\} ` est de capacité
+`5`.
+
+|image|
+
+Quelle est la capacité de la coupe
+`C=\left\{ s,i_2,i_3\right\} `?
+
+Que peut-on en déduire sur la valeur d’un flot ?
+
+Pour toute coupe `C` et tout flot `F` dans un réseau, la
+capacité `\left|C\right|` de la coupe est supérieure au volume
+`\left|F\right|` du flot:
+`\left|C\right|\geq\left|F\right|`.
+
+Que peut on espérer avoir ?
+
+Une dualité et un théorème min-max, bien-sûr!
+
+(Coupe min-Flot max) Dans un réseau, le volume maximal d’un flot est
+égal à la capacité minimale d’une coupe.
+
+Vérifiez-le dans notre exemple.
+
+On considère une solution `F` optimale du problème de flot obtenue
+avec le simplexe pour les réseaux avec limites de capacité.
+
+|image|
+
+On calcule les valeurs `y_i` en chaque sommets.
+
+Les coûts sont de `0` partout sauf sur l’arc `ps`, où le
+coût est de `-1`.
+
+Donc la valeur de `y_i` est:
+
+-  `0` si `i` est relié à `s` dans `T`,
+
+-  `1` si `i` est relié à `t` dans `T`.
+
+On prend comme coupe `C` l’ensemble des sommets `i` avec
+`y_i=0`.
+
+Chaque arc `ij` sortant de `C` est «rentable» puisque
+`y_i+c_{ij}=0<1=y_j`.
+
+Or, `ij` n’est pas dans l’arbre, et le flot est optimal.
+
+Donc `ij` doit être utilisé à pleine capacité:
+`x_{ij}=u_{ij}`.
+
+De même, tout arc `ij` entrant est non rentable, et n’est donc pas
+utilisé: `x_{ij}=0`.
+
+Conclusion: Le volume du flot `F` est égal à la capacité de la
+coupe `C`:
+
+.. MATH:: \left|F\right|=\sum_{ij\textrm{ sortant}}x_{ij}-\sum_{ij\textrm{ entrant}}x_{ij}=\sum_{ij\textrm{ sortant}}u_{ij}=\left|C\right|.
+
+Il y a quelques boulons à serrer.
+
+#. Le simplexe pourrait terminer en indiquant que le problème est non
+   borné: *i.e.* il existe des flots de volume aussi grand que l’on
+   veut:
+
+   |image|
+
+   Dans ce cas, il ne peut pas y avoir de coupe de capacité finie.
+
+   Donc le théorème reste valide.
+
+#. Le simplexe pourrait indiquer que le problème est non faisable.
+
+   En fait, non, puisque `x_{ij}=0,\textrm{ }\forall x_{ij}` est
+   solution.
+
+#. Si le flot max est de volume `0`, il se pourrait que l’arbre ne
+   contienne pas l’arc `ps`. Du coup, l’ensemble des sommets
+   `i` tels que `y_i=0` ne serait pas forcément une coupe.
+
+   Un tel cas correspond en fait à une solution dégénérée qui est
+   arborescente vis-à-vis de plusieurs arbres.
+
+   En fait, en faisant un pivot convenable, on peut toujours remettre
+   `ps` dans l’arbre.
+
+Applications
+~~~~~~~~~~~~
+
+On a vu que les problèmes de flots était un cas particulier des
+problèmes de transport avec limites de capacités.
+
+Quel est donc l’intérêt de considérer les problèmes de flots ?
+
+On a un algorithme (méthode du chemin augmentant) plus rapide que le
+simplexe.
+
+Trouver une solution faisable dans un problème de transport avec limites de capacités
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+On prend le problème de transport suivant, et on se demande s’il est
+faisable.
+
+|image|
+
+On peut le transformer en problème de flot, en oubliant les coûts, et en
+rajoutant une source, reliée convenablement aux producteurs, et un
+puits, relié convenablement aux consommateurs:
+
+|image|
+
+S’il existe un flot de volume `8`, les arcs reliant `s` aux
+producteurs seront utilisés à pleine capacité, et de même pour les arcs
+reliant les consommateurs à `t`. Cela simule exactement les
+productions et consommations escomptées, donc le problème de réseau
+d’origine est faisable.
+
+La réciproque est aussi clairement vraie: si le problème est faisable,
+alors il existe un flot de volume `8`.
+
+Dans notre cas, on en déduit que le problème n’est pas faisable. En
+effet, on peut trouver une coupe de capacité `7`.
+
+De manière générale, on peut toujours transformer un problème de
+transport avec limite de capacité en un problème de flot, de façon à
+déterminer s’il est faisable.
+
+Cela donne un algorithme plus rapide que le simplexe pour la phase I de
+la résolution.
+
+Couplages dans les graphes bipartis
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Mettre sous forme de problème de flot le problème de rechercher un
+couplage max dans le graphe biparti suivant.
+
+Problème des mines à ciel ouvert
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Des études géologiques ont permis de déterminer précisément la nature du
+sous-sol, et l’emplacement des gisements orifères à l’endroit ou l’on a
+décidé de creuser une mine à ciel ouvert. Certains gisements sont
+profonds, et il n’est pas clair qu’il soit rentable d’excaver tout le
+sol au-dessus pour y accéder.
+
+Modèle: le sous-sol a été délimité en un certain nombre de blocs. Pour
+chaque bloc `i`, on connaît le coût `C_i` d’excavation, et
+le profit `P_i` que l’on peut escompter de son traitement.
+
+Au final, on associe à chaque bloc `i` la quantité
+`w_i=C_i-P_i`. Si l’on ne considère pas les autres blocs, il
+est rentable de creuser `i` si et seulement si `w_i<0`.
+
+On veut déterminer quels blocs on doit creuser pour maximiser le profit
+total `-\sum_iw_i` (ou autrement dit minimiser
+`\sum_iw_i`).
+
+Maintenant, il y a des contraintes supplémentaires: si un bloc `i`
+est sous un bloc `j`, on ne peux pas creuser `i` sans
+creuser `j`!
+
+On introduit un ordre partiel, de sorte que `i<j` si pour creuser
+`i` on doit creuser `j`.
+
+Comme on le verra, la forme des blocs, et le type d’ordre partiel n’est
+pas relevant.
+
+On considère le sous-sol suivant:
+
+Comment modéliser notre problème sous forme de problème de flot max ?
+
+La modélisation des contraintes de précédences est un peu astucieuse!
+
+On introduit le réseau suivant:
+
+C’est la remarque suivante qui va faire marcher la machine:
+
+Soit `C` une coupe.
+
+S’il existe deux blocs `i<j`, avec `i\in C` et
+`j\in C`, alors `C` est de capacité infinie.
+
+La réciproque est vraie.
+
+Les coupes de capacité finie sont en correspondance avec les coupes
+respectant les contraintes.
+
+Maintenant, on peut vérifier que la capacité d’une coupe finie vaut
+exactement
+
+.. MATH:: \sum_{i\in C,\textrm{ }i\textrm{ bloc non rentable}}w_i-\sum_{i\not\in C,\textrm{ }i\textrm{ bloc rentable}}w_i.
+
+Quitte à rajouter le terme constant
+`\sum_{i,\textrm{ }i\textrm{ bloc}}w_i`, on est en train de
+calculer le profit lorsque l’on enlève les blocs `i` avec
+`i\in C`.
+
+Résumé: Soit `I` un ensemble de blocs, et `C` la coupe
+`\left\{ s\right\} \cup I`.
+
+-  Si `I` ne satisfait pas les contraintes, la capacité de
+   `C` est infinie.
+
+-  Si `I` satisfait les contraintes, la capacité de `C` est
+   l’opposé du profit.
+
+Maximiser le profit revient à trouver une coupe min.
+
+En termes pédants: on peut résoudre par un algorithme de flot le
+problème de trouver une section finale de poids minimal dans un ordre
+partiel.
+
+Dualités chaînes/antichaînes dans les ordres partiels; théorème de Dilworth
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+ Problème des visites guidées. Une compagnie propose `7` visites
+guidées dans la journée, notées `a,b,c,d,e,f,g`, dont les horaires
+et durées sont fixées. Si une visite (par ex. `a`) termine
+suffisament avant une autre (par exemple `c`), le guide de la
+première visite peut enchaîner sur la deuxième; on notera alors
+`a\rightarrow c`. En l’occurence, voici tous les enchaînements
+possibles:
+
+`a\rightarrow c,\textrm{ }a\rightarrow d,\textrm{ }a\rightarrow f,\textrm{ }a\rightarrow g,\textrm{ }b\rightarrow c,\textrm{ }b\rightarrow g,\textrm{ }d\rightarrow g,\textrm{ }e\rightarrow f,\textrm{ }e\rightarrow g`.
+
+-  Combien faut-il de guides au minimum dans cet exemple ?
+
+-  Comment trouver le nombre minimum de guides nécessaires dans le cas
+   général ?
+
+Soit `P=(E,<)` un ordre partiel.
+
+Une *chaîne* `C` de `P` est un ensemble de sommets de
+`P` deux à-deux comparables:
+
+.. MATH:: x\in C\textrm{ et }y\in C\textrm{ }\Rightarrow\textrm{ }x<y\textrm{ ou }y<x.
+
+Une *antichaîne* `A` de `P` est un ensemble de sommets
+deux-à-deux incomparables.
+
+Une *couverture en chaînes* de `P` est un ensemble
+`C_{1},\ldots,C_{k}` de chaînes, de sorte que tout sommet de
+`P` est dans une unique chaîne `C_{i}`.
+
+Une *couverture en antichaînes* de `P` est un ensemble
+`A_{1},\ldots,A_{k}` d’antichaînes, de sorte que tout sommet de
+`P` est dans une unique antichaîne `A_{i}`.
+
+Trouver dans l’ordre partiel `P` précédent:
+
+#. Une chaîne de taille maximale
+
+#. Une antichaîne de taille maximale
+
+#. Une couverture en chaînes de `P` de taille minimale
+
+#. Une couverture en antichaînes de `P` de taille minimale
+
+Que remarquez vous ?
+
+Y-aurait-il un théorème min-max reliant la taille de la plus grande
+chaîne et la taille de la plus petite couverture en antichaînes ? Et un
+autre reliant la taille de la plus grande antichaîne et celle de la plus
+petite couverture en chaînes ?
+
+Soit `P` un ordre partiel quelconque.
+
+#. Soit `C` une chaîne de `P` et `A_{1},\ldots,A_{k}`
+   une couverture de `P` en antichaînes.
+
+   Montrer que `\left|C\right|\leq k`.
+
+#. Soit `A` une antichaîne de `P` et
+   `C_{1},\ldots,C_{k}` une couverture de `P` en chaînes.
+
+   Montrer que `\left|A\right|\leq k`.
+
+Soit `P` un ordre partiel. La taille de la plus grande chaîne de
+`P` est égale à la taille de la plus petite couverture en
+antichaînes de `P`.
+
+Prouvez-le!
+
+Le théorème dans l’autre sens est plus difficile et bien plus profond.
+Il n’y a pas de construction élémentaire de l’antichaîne et de la
+couverture en chaîne idoine. On va en fait se ramener à la programation
+linéaire (surprise).
+
+(Dilworth) Soit `P` un ordre partiel. La taille de la plus grande
+antichaîne de `P` est égale à la taille de la plus petite
+couverture en chaînes de `P`.
+
+On note `n` le nombre de sommets de `P`.
+
+Choisir une couverture en chaîne de `P` est équivalent à
+sélectionner un certain nombre d’arcs dans `P`, de sorte que
+chaque sommet ait au plus un arc sortant de sélectionné, et un arc
+rentrant de sélectionné.
+
+Remarque: s’il y a `k` chaînes, il y a `n-k` arcs
+sélectionnés.
+
+Cela ressemble à un problème de couplage maximal dans un graphe biparti.
+
+On construit un graphe biparti `B` dans lequel chaque sommet
+`x` de `P` est dupliqué en `(x,1)` et `(x,2)`.
+
+Chaque fois que `x<y` dans `P`, on relie `(x,1)` et
+`(y,2)`.
+
+Qu’est-ce qu’un couplage dans `B`?
+
+Un ensemble d’arcs de `P` vérifiant exactement les conditions
+voulues.
+
+Une couverture de `P` en `k` chaînes correspond à un
+couplage de `B` de taille `n-k`.
+
+Prenons une couverture de `P` de taille `k` minimale.
+
+Cela donne un couplage de taille max `n-k` de `B`.
+
+Le théorème min-max pour les graphes bipartis indique qu’il y a une
+couverture de `B` de même taille: `n-k` sommets de `B`
+qui touchent tous les arcs.
+
+Dans `P` cela correspond à au plus `n-k` sommets qui
+touchent tous les arcs.
+
+Soit `A` l’ensemble des sommets restants qui est de taille au
+moins `k`.
+
+Il ne peut pas y avoir d’arcs entre deux sommets de `A`.
+
+Conclusion: `A` est une antichaîne de taille au moins `k`.
+
+Suivez le déroulement de la preuve sur l’ordre partiel précédent
+
+La méthode du chemin augmentant
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Rechercher un couplage max dans un graphe biparti est un problème très
+classique.
+
+Il existe en fait des techniques plus rapides que les algorithmes de
+réseaux de transport.
+
+L’une d’entre elles est la méthode du chemin augmentant.
+
+Cas général des graphes simples
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Couplage de taille maximale dans le chemin `P_6`.
+
+On peut construire un couplage de taille maximal progressivement à
+partir d’un couplage vide en rajoutant des arêtes une à une. Mais si on
+n’est pas parti correctement, on risque d’être bloqué avec un couplage
+qui est maximal, alors qu’il n’est pas de taille maximale. Il faut
+appliquer une transformation au couplage pour pouvoir l’agrandir.
+
+Soit `M` un couplage dans un graphe `G`.
+
+Un sommet *`M`-saturé* (ou saturé) est un sommet touchant une
+arête du couplage.
+
+Un chemin *`M`-alterné* de `G` est un chemin de `G`
+qui utilise alternativement des arêtes dans `M` et hors de
+`M`.
+
+Un chemin *`M`-augmentant* est un chemin `M`-alterné
+commençant et finissant par des sommets non `M`-saturés.
+
+Regardons ce que cela donne avec le couplage suivant:
+
+|image|
+
+Si `M` est un couplage, et `C` est un chemin
+`M`-augmentant, alors on peut construire un couplage `M'`
+strictement plus grand en utilisant `C`.
+
+Cas particulier: lorsque le chemin `M`-augmentant consiste d’une
+seule arête reliant deux sommets non saturés, on est ramené au rajout
+d’une arête au couplage `M'`.
+
+Soit `G` le graphe
+
+|image|
+
+Le couplage `M` dessiné est maximal, mais pas de taille maximale.
+Trouvez un chemin `M`-augmentant et construisez le couplage
+`M'` correspondant.
+
+Est-ce que cette opération de chemin augmentant est suffisante ?
+
+(Berge 1957) Un couplage `M` est de taille maximale si et
+seulement s’il n’y a pas de chemin `M`-augmentant.
+
+Soit `M` un couplage, comme dans l’exemple suivant:
+
+|image|
+
+On suppose qu’il existe un couplage `M'` de taille strictement
+plus grande.
+
+|image|
+
+On va construire un chemin `M`-augmentant.
+
+On considère le graphe `H` obtenu par réunion de `M` et
+`M'`.
+
+Les sommets de `H` sont de degré au plus `2`.
+
+Ses composantes connexes sont donc des doubles arêtes ou des cycles et
+chemins dont les arêtes alternent entre `M` et `M'`. Dans un
+cycle ou une double arête il y a autant d’arêtes de `M` que de
+`M'`. Il y aura donc forcément un chemin qui contiendra une arête
+de plus de `M'` que de `M`. Ce chemin est un chemin
+`M`-augmentant.
+
+On déduit de ce théorème un algorithme (ou plutôt une méthode):
+
+Recherche d’un couplage maximal dans un graphe:
+
+#. Partir d’un couplage `M` quelconque (par exemple le couplage
+   vide);
+
+#. Chercher un chemin `M`-augmentant;
+
+#. S’il n’y en a pas, renvoyer `M` qui est maximal; sinon réitérer
+   avec `M:=M'`.
+
+Appliquez cette méthode pour trouver un couplage maximal du graphe
+
+|image|
+
+Pour un graphe quelconque, l’étape 2 peut être difficile!
+
+Par contre, pour un graphe biparti, il y a un algorithme.
+
+Recherche d’un chemin augmentant pour un couplage d’un graphe biparti
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+On va rechercher un couplage maximal dans le graphe biparti précédent,
+en montrant comment on peut trouver de manière systématique un chemin
+`M`-augmentant.
+
+Soit `M` un couplage d’un graphe biparti `B` entre les
+parties `X` et `Y`.
+
+Cet algorithme renvoie soit un chemin `M`-augmentant, soit une
+couverture du graphe de taille `\left|M\right|`, ce qui indiquera
+que le couplage `M` est de taille maximale.
+
+Soit `U` l’ensemble des sommets de `X` non touchés par
+`M`, et `V` l’ensemble des sommets de `Y` non touchés
+par `M`.
+
+On va rechercher par un parcours en largeur les chemins
+`M`-alternés allant de `U` à `V`.
+
+`S` (resp. `T`) va représenter l’ensemble des sommets
+`x` de `X` (resp. `Y`) pour lesquels on aura déjà
+trouvé un chemin `M`-alterné allant de `U` à `x`.
+
+Initialisation:
+    `S:=U`, `T:=\emptyset`;
+
+Itération:
+     
+
+    Cas 1:
+        Il y a une arête reliant un sommet de `S` à un sommet de
+        `V`. Cela donne un chemin `M`-augmentant que l’on
+        renvoie
+
+    Cas 2:
+        Il y a une arête reliant un sommet `x` de `S` à un
+        sommet `y` de `Y-V` avec `xy\notin\not M`. Ce
+        sommet est relié par une arête du couplage à un sommet `w`
+        de `X`. Comme `y` et `w` sont reliés à
+        `U` par un chemin `M`-alterné, on rajoute `y`
+        à `T` et `w` à `S`.
+
+    Cas 3:
+        `T\cup(X-S)` est une couverture de taille
+        `\left|M\right|` du graphe (vérifiez le!) que l’on
+        renvoie.
+
+Appliquer l’algorithme sur un graphe biparti de votre choix
+
+Démontrer que `T\cup(X-S)` est bien une couverture de taille
+`\left|M\right|` du graphe.
+
+Donner la preuve
+
+Algorithme de Ford-Fulkerson
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+La méthode du chemin augmentant se généralise à la recherche de couplage
+max dans un graphe biparti valué, et en fait aussi aux problèmes de
+flots max. On ne va regarder son fonctionnement que sur un exemple, et
+on renvoie à pour les détails.
+
+On veut transporter le plus grand nombre possible de voyageurs de
+San-Francisco à New-York, sachant qu’il ne reste que quelques places
+dans les avions entre les villes suivantes:
+
+|image|
+
+Soit `R` un réseau, et `F` un flot donné dans ce réseau.
+
+Un chemin allant de la source `s` au puits `p` est
+*`F`-augmentant* si pour chaque arête `ij` du chemin on a:
+
+-  `x_{ij}<u_{ij}` si l’arc `ij` est dans le même sens que
+   dans le réseau
+
+-  `x_{ij}>0` si l’arc `ij` est dans le sens inverse du
+   réseau.
+
+À partir d’un chemin `F`-augmentant, on peut construire un nouveau
+flot `F'` qui sera de volume strictement plus gros.
+
+Le principe de l’algorithme de Ford-Fulkerson est de partir d’un flot
+`F` quelconque, et de l’améliorer itérativement en recherchant des
+chemins `F`-augmentant.
+
+À chaque étape, la recherche d’un chemin `F`-augmentant se fait
+par un parcours en profondeur, de manière similaire à la recherche d’un
+chemin `M`-augmentant dans un graphe biparti. Si cette recherche
+échoue, elle dévoile une coupe de capacité égale au flot, ce qui donne
+un certificat d’optimalité du flot.
+
+On peut toujours initialiser l’algorithme avec un flot nul.
+
+Si toutes les capacités sont entières et finies, chaque itération
+augmente le flot d’au moins `1`. Cet algorithme ne peut donc pas
+cycler, et il termine en un nombre fini d’étapes.
+
+Avec une mauvaise stratégie, et des capacités infinies ou non-entières,
+l’algorithme peut ne pas terminer.
+
+|image|
+
+Avec une stratégie convenable, cet algorithme est en fait polynomial, en
+`O\left(n^3\right)`, même si les capacités sont infinies ou non
+entières.
+
+Pour les réseaux avec peu d’arcs, il y a des algorithmes plus compliqués
+qui permettent d’obtenir d’encore meilleurs bornes. Cf. pour les
+détails.
+
+Méthodes alternatives au simplexe
+---------------------------------
+
+Pour conclure ce chapitre sur la programmation linéaire, nous présentons
+rapidement quelques méthodes alternatives qui ont été développées pour
+résoudre les problèmes de programmation linéaire généraux. Nous nous
+contentons d’évoquer leur principe, leurs avantages et inconvénients, et
+donnons des références pour ceux qui voudraient en savoir plus.
+
+Méthode de l’ellipsoïde
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Principe
+    On commence par utiliser la dualité pour se ramener à la recherche
+    d’une solution faisable d’un système d’inéquations linéaires. On
+    peut en fait se ramener par une perturbation convenable à la
+    recherche d’une solution faisable d’un système d’inéquations
+    linéaires strictes!
+
+    Si un tel système est faisable, le volume de l’ensemble des
+    solutions peut alors être minoré par une quantité `V` qui
+    dépends de la dimension de l’espace, et de la taille des
+    coefficients dans le système linéaire.
+
+    On part d’un ellipsoïde `E` suffisamment gros pour contenir
+    toutes les solutions faisables.
+
+    Si le centre de `E` est une solution faisable, on a terminé.
+
+    Sinon, on peut couper l’ellipsoïde en deux, et inclure ce
+    demi-ellispoïde dans un ellipsoïde `E'` qui contient encore
+    toutes les solutions faisables. On réitère avec `E:=E'`.
+
+    À chaque itération, on a `V(E')<\alpha V(E)`, où
+    `\alpha<1` est une constante qui ne dépends que de la
+    dimension; donc le volume de `E` décroît exponentiellement. Au
+    bout d’un petit nombre d’itérations, si l’on a pas obtenu de
+    solution faisable, on a `V(E)<V`, ce qui prouve que la système
+    n’a pas de solution faisable.
+
+Avantages
+     
+
+    -  Algorithme polynomial
+
+Inconvénients
+     
+
+    -  Plus lent *en pratique* que l’algorithme du simplexe
+
+    -  Ne donne pas certains résultats théoriques (dualité, géométrie
+       des polyèdres)
+
+Référence
+
+Méthode des points intérieurs
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Principe
+    Cette méthode est l’antithèse exacte du simplexe.
+
+    Le principe du simplexe est de ne considérer que des solutions
+    basiques qui sont à la frontière du polyèdre, et d’utiliser de
+    l’algèbre linéaire pour itérer parmi ces solutions.
+
+    Ici au contraire, la méthode ne considère que des solutions
+    strictement à l’intérieur du polyèdre. L’idée est d’approximer les
+    inégalités du système linéaire, qui forment fondamentalement des
+    discontinuités, en barrières de potentiel, qui sont elles continues.
+    Du coup, on peut utiliser les techniques d’optimisation non-linéaire
+    continue, comme les méthodes de gradients.
+
+Avantages
+     
+
+    -  Rivalise avec le simplexe *en pratique*, suivant le type de
+       problème rencontrés
+
+Inconvénients
+     
+
+    -  Ne donne pas de résultats théoriques (dualité, géométrie des
+       polyèdres)
+
+Références
+
+1 V. Chvatal. Linear Programming.
+
+R. Vanderbie. Linear Programming; Foundations and Extensions.
+http://www.princeton.edu/~rvdb/LPbook/index.html
+
+Linear Programming FAQ http://rutcor.rutgers.edu/~mnk/lp-faq.html
+
+http://en.wikipedia.org/wiki/Linear_programming
+
+.. |image| image:: transport-1
+.. |image| image:: transport-2
+.. |image| image:: transport-3
+.. |image| image:: chemin
+.. |image| image:: cycle
+.. |image| image:: nonconnexe
+.. |image| image:: connexe
+.. |image| image:: foret
+.. |image| image:: arbre
+.. |image| image:: transport-arbre-1
+.. |image| image:: autoroutes
+.. |image| image:: surproduction
+.. |image| image:: transport-nonconnexe
+.. |image| image:: transport-doublearrete
+.. |image| image:: graphe
+.. |image| image:: graphe-couverture
+.. |image| image:: graphe-couplage
+.. |image| image:: biparti
+.. |image| image:: biparti-reseau
+.. |image| image:: biparti-reseau-optimal
+.. |image| image:: transport-cycle
+.. |image| image:: flot
+.. |image| image:: flot-nonborne
+.. |image| image:: flot
+.. |image| image:: flot-reseau
+.. |image| image:: flot-reseau-nonborne
+.. |image| image:: flot-transportfaisable
+.. |image| image:: flot-transportfaisable2
+.. |image| image:: couplage2
+.. |image| image:: couplage
+.. |image| image:: couplage-berge
+.. |image| image:: couplage-berge2
+.. |image| image:: biparti2
+.. |image| image:: flot-voyageurs
+.. |image| image:: flot-mauvais
