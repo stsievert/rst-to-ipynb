@@ -12,6 +12,7 @@ Subsection a
     p = argwhere(x == 2)
 
 .. image:: hood.jpg
+   :width: 60 %
 
 Table
 -----
