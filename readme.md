@@ -1,7 +1,8 @@
 
 # rst-to-ipynb
-This project converts between a standalone RESructured Text file and a IPython
-notebook file.
+This project converts between a standalone
+[reStructuredText](http://docutils.sourceforge.net/rst.html) file
+and a [IPython Notebook](http://ipython.org/notebook.html) file.
 
 ## Example
 `python convert.py tests/test.rst tests/test.ipynb` produces [test.ipynb] from
